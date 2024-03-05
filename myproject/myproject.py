@@ -142,8 +142,8 @@ def encuentra_estado(textoXml):
 def upload_string_to_s3(text, bucket_name, file_name):
     # Inicializar el cliente de S3
 
-    ACCESS_KEY_ID= "AKIASJOXYEB47ETRXSP3"
-    ACCESS_SECRET_KEY = "uHFyyEWGSAwqWNcTnh4qHDQLetqGSRvB2YI35uMB"
+    ACCESS_KEY_ID= "YOUR_AWS_access_key"
+    ACCESS_SECRET_KEY = "YOUR_AWS_secret_key"
     REGION_NAME = "us-east-1"
 
   #S3 Connect
