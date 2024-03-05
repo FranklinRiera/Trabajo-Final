@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLIENTE CONSULTAS Y DESCARGAS DOCUMENTOS SRI</title>
+</head>
+<body>
+    <div id="resultados-api">
+        <h1>Generar Archivo XML. Clave de Acceso:</h1>
+        <input type="number" id="numero" style="width: 400px;">
+        <button onclick="llamarAPI()">Llamar API</button>
+    </div>
+
+    <div id="listado-buckets">
+        <h1>Listado de Buckets</h1>
+        <button onclick="listBuckets()">Listar Archivos</button>
+    </div>
+
+    <ul id="file-list"></ul>
+    <script>
+        // Función para llamar a la API
+        function llamarAPI() {
+            var numero = document.getElementById("numero").value;
+            fetch('http://3.239.63.97:5000/generar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ numero: numero }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Respuesta recibida:', data);
+                if (data.error) {
+                   alert('Error al Procesar: ' + data.error);
+                } else {
+                   alert('Archivo XML generado correctamente: ' + numero + '.xml');
+                   listBuckets();
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Función para listar los buckets de AWS
+        function listBuckets() {
+            clearFileList();
+            fetch('https://qn4nizfl26.execute-api.us-east-1.amazonaws.com/ETAPA')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Respuesta recibida:', data);
+                const responseBody = JSON.parse(data.body)
+                const fileList = document.getElementById('file-list');
+                responseBody.forEach(obj => {
+                    const listItem = document.createElement('li');
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = obj.signed_url;
+                    downloadLink.textContent = obj.key;
+                    downloadLink.download = obj.key;
+                    listItem.appendChild(downloadLink);
+                    fileList.appendChild(listItem);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+        function clearFileList() {
+            var fileList = document.getElementById("file-list");
+            fileList.innerHTML = ""; // Borra todos los elementos hijos de la lista
+        }
+    </script>
+</body>
+</html>

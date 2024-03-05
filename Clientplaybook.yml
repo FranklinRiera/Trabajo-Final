@@ -1,0 +1,25 @@
+---
+- name: Install and set up Apache
+  hosts: webservers
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Actualizar el índice de paquetes
+      apt:
+        update_cache: yes
+
+    - name: Instalar Apache
+      apt:
+        name: apache2
+        state: present  # Asegura que Apache esté instalado y en su última versión
+
+    - name: Copiar archivo index.html desde la máquina local al servidor remoto
+      copy:
+        src: ./index.html  # Ruta local del archivo index.html
+        dest: /var/www/html/index.html    # Ruta en el servidor remoto
+
+    - name: Reiniciar Apache
+      service:
+        name: apache2
+        state: restarted  # Reinicia Apache para aplicar los cambios de configuración
