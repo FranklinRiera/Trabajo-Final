@@ -99,12 +99,6 @@ resource "aws_security_group" "my_security_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  ingress {
-  from_port   = 5432  # Puerto de PostgreSQL
-  to_port     = 5432  # Puerto de PostgreSQL
-  protocol    = "tcp"
-  cidr_blocks = ["0.0.0.0/0"]  # Permitir tráfico desde cualquier dirección IP. Considera restringir esto según tu configuración de red.
-  }
 
   ingress {
     from_port   = 22
@@ -142,19 +136,6 @@ resource "aws_instance" "Client" {
   }
 }
 
-resource "aws_instance" "API" {
-  ami            = "ami-058bd2d568351da34" # Reemplaza con la AMI de AWS que desees
-  instance_type  = "t2.micro"
-  subnet_id      = aws_subnet.my_subnet.id
-  security_groups = [aws_security_group.my_security_group.id]
-  key_name      = aws_key_pair.my_key_pair.key_name
-  #subnet_id     = "subnet-09f35a2351872c0b5"  # Update with your subnet ID
-  #vpc_security_group_ids = ["sg-04d03e3084e26d15d"]  # Update with your security group ID
-  ##key_name = "franklin.riera" # Reemplaza con el nombre de tu clave en AWS
-  tags = {
-    Name = "terraform-api"
-  }
-}
 
 
 output "public_ip_Client" {
@@ -162,7 +143,3 @@ output "public_ip_Client" {
   description = "La dirección IP pública de la instancia creada"
 }
 
-output "public_ip_API" {
-  value       = aws_instance.API.public_ip
-  description = "La dirección IP pública de la instancia creada"
-}
